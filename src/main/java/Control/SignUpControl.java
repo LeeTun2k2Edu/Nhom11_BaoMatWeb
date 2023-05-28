@@ -4,6 +4,7 @@ import DAO.LoaispDAO;
 import DAO.SanPhamDAO;
 import DAO.SignUpDAO;
 import Model.LoaiSP;
+import Model.MD5;
 import Model.SanPham;
 import Model.SendMail;
 import Model.Users;
@@ -63,6 +64,10 @@ public class SignUpControl extends HttpServlet {
 		String password = request.getParameter("password");
 		String repassword = request.getParameter("repassword");
 
+		  MD5 lib = new MD5();
+	        String passMD5 = lib.md5(password);
+	        String repassMD5 = lib.md5(repassword);
+	        
 		SignUpDAO dao = new SignUpDAO();
 		Users a = dao.CheckUserExist(username);
 		if (a == null) {
@@ -74,8 +79,8 @@ public class SignUpControl extends HttpServlet {
 			session.setAttribute("username", username);
 			session.setAttribute("email", email);
 			session.setAttribute("phone", phone);
-			session.setAttribute("password", password);
-			session.setAttribute("repassword", repassword);
+			session.setAttribute("password", passMD5);
+			session.setAttribute("repassword", repassMD5);
 			session.setAttribute("verify", veri);
 
 			SendMail sm = new SendMail();
