@@ -19,16 +19,15 @@ import Model.SanPham;
  */
 @WebServlet("/buy")
 public class AddToCartControl extends HttpServlet {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	protected void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-		request.setCharacterEncoding("UTF-8");
-		response.setCharacterEncoding("UTF-8");
-		response.setContentType("text/html; charset=UTF-8");
-	
-		
-		SanPhamDAO dao = new SanPhamDAO();
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        request.setCharacterEncoding("UTF-8");
+        response.setCharacterEncoding("UTF-8");
+        response.setContentType("text/html; charset=UTF-8");
+
+        SanPhamDAO dao = new SanPhamDAO();
         List<SanPham> list = dao.getAll();
         Cookie[] arr = request.getCookies();
         String txt = "";
@@ -37,12 +36,13 @@ public class AddToCartControl extends HttpServlet {
                 if (o.getName().equals("cart")) {
                     txt += o.getValue();
                     o.setMaxAge(0);
+                    o.setHttpOnly(true); // Đặt thuộc tính "HttpOnly"
                     response.addCookie(o);
                 }
             }
         }
         String id = request.getParameter("id");
-    	String maloai = request.getParameter("maLSP"); // 1
+        String maloai = request.getParameter("maLSP"); // 1
         if (txt.isEmpty()) {
             txt = id + ":" + "1";
         } else {
@@ -50,20 +50,20 @@ public class AddToCartControl extends HttpServlet {
         }
         Cookie c = new Cookie("cart", txt);
         c.setMaxAge(2 * 24 * 60 * 60);
+        c.setHttpOnly(true); // Đặt thuộc tính "HttpOnly"
         response.addCookie(c);
-        
-        response.sendRedirect("loaisp?maLSP="+maloai);
 
-	}
+        response.sendRedirect("loaisp?maLSP=" + maloai);
 
-	protected void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		request.setCharacterEncoding("UTF-8");
-		response.setCharacterEncoding("UTF-8");
-		response.setContentType("text/html; charset=UTF-8");
-		
-		SanPhamDAO dao = new SanPhamDAO();
+    }
+
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        request.setCharacterEncoding("UTF-8");
+        response.setCharacterEncoding("UTF-8");
+        response.setContentType("text/html; charset=UTF-8");
+
+        SanPhamDAO dao = new SanPhamDAO();
         List<SanPham> list = dao.getAll();
         Cookie[] arr = request.getCookies();
         String txt = "";
@@ -72,6 +72,7 @@ public class AddToCartControl extends HttpServlet {
                 if (o.getName().equals("cart")) {
                     txt += o.getValue();
                     o.setMaxAge(0);
+                    o.setHttpOnly(true); // Đặt thuộc tính "HttpOnly"
                     response.addCookie(o);
                 }
             }
@@ -84,9 +85,10 @@ public class AddToCartControl extends HttpServlet {
         }
         Cookie c = new Cookie("cart", txt);
         c.setMaxAge(2 * 24 * 60 * 60);
+        c.setHttpOnly(true); // Đặt thuộc tính "HttpOnly"
         response.addCookie(c);
-        
+
         response.sendRedirect("productDetail?maSP=" + id);
-	}
+    }
 
 }
