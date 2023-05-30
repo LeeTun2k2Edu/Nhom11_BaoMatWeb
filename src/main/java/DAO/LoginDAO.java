@@ -19,8 +19,8 @@ public class LoginDAO {
         try {
             conn = new ConnectJDBC().getConnection();
             ps = conn.prepareStatement(query);
-            ps.setString(1, username);
-            ps.setString(2, password);
+            ps.setString(1, username.substring(0, 50));
+            ps.setString(2, password.substring(0, 50));
             rs = ps.executeQuery();
 
             while (rs.next()) {
@@ -51,7 +51,7 @@ public class LoginDAO {
         try {
             conn = new ConnectJDBC().getConnection();
             ps = conn.prepareStatement(query);
-            ps.setString(1, email);
+            ps.setString(1, email.substring(0, 50));
             rs = ps.executeQuery();
 
             while (rs.next()) {
@@ -82,8 +82,8 @@ public class LoginDAO {
             conn = new ConnectJDBC().getConnection();
 
             ps = conn.prepareStatement(querry);
-            ps.setString(1, pass);
-            ps.setString(2, pass);
+            ps.setString(1, pass.substring(0, 50));
+            ps.setString(2, pass.substring(0, 50));
             ps.setInt(3, id);
             ps.executeUpdate();
 

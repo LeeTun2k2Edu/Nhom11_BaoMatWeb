@@ -28,10 +28,6 @@ public class productDetailControl extends HttpServlet {
 		response.setCharacterEncoding("UTF-8");
 		response.setContentType("text/html; charset=UTF-8");
 		String id_raw = request.getParameter("maSP");
-		
-		// Escape dữ liệu đầu vào để ngăn chặn XSLT Injection
-		id_raw = escapeXML(id_raw);
-		
 		int id = Integer.parseInt(id_raw);
 		String madm=new SanPhamDAO().getmaDM(id_raw);
 		SanPham sanPham = new SanPhamDAO().getProductById(id);

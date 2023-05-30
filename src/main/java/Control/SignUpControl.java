@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * Servlet implementation class SignUpControl
@@ -23,6 +24,8 @@ import java.util.List;
 @WebServlet("/signup")
 public class SignUpControl extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+//	String invalidCharsRegex = ".*[\'\";%].*";
+	String invalidCharsRegex = ".*[\'\";%\\\\].*";
 
 	/**
 	 * @see HttpServlet#HttpServlet()
@@ -80,8 +83,17 @@ public class SignUpControl extends HttpServlet {
 
 			SendMail sm = new SendMail();
 			Boolean test = sm.sendMail(email, veri, fullname);
-
-			if (test == false) {
+			
+			if (Pattern.matches(invalidCharsRegex, username) || username.contains(" ")) {
+			    request.setAttribute("mess1", "Username chứa các kí tự không hợp lệ hoặc khoảng trắng .*[\\'\\\";%].*");
+			    request.getRequestDispatcher("/shop-cart/signUp.jsp").forward(request, response);
+			}
+			else if(!password.contentEquals(repassword)) {
+				request.setAttribute("mess1", "Mật khẩu không trùng khớp");
+				request.getRequestDispatcher("/shop-cart/signUp.jsp").forward(request, response);
+			}
+			
+			else if (test == false) {
 				request.setAttribute("mess1", "Email không chính xác");
 				request.getRequestDispatcher("/shop-cart/signUp.jsp").forward(request, response);
 			} else {

@@ -22,9 +22,11 @@ public class ConnectJDBC {
 
 		public static void main(String[] args) {
 			try {
-			System.out.println(new ConnectJDBC().getConnection());
+				
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
 	}
+
+
