@@ -18,20 +18,19 @@ import Model.LoaiSP;
 import Model.SanPham;
 
 /**
- * Servlet implementation class AddDelRemoveCartControl
+ * Servlet implementation class AddDelRomoveCartControl
  */
 @WebServlet("/AdDelRe")
-public class AddDelRomoveCartControl  extends HttpServlet {
-    private static final long serialVersionUID = 1L;
+public class AddDelRomoveCartControl extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+  
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+	}
 
-    }
-
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        request.setCharacterEncoding("UTF-8");
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		request.setCharacterEncoding("UTF-8");
         response.setCharacterEncoding("UTF-8");
         response.setContentType("text/html; charset=UTF-8");
 
@@ -45,7 +44,6 @@ public class AddDelRomoveCartControl  extends HttpServlet {
                 if (o.getName().equals("cart")) {
                     txt += o.getValue();
                     o.setMaxAge(0);
-                    o.setHttpOnly(true); // Đặt thuộc tính "HttpOnly"
                     response.addCookie(o);
                 }
             }
@@ -60,15 +58,16 @@ public class AddDelRomoveCartControl  extends HttpServlet {
                 try {
                     SanPham p = dao.getProductById(id);
                     int numStore = p.getSoLuong();
-                    if (num == -1 && (cart.getQuantityById(id) <= 1)) { // chỉ có 1 sản phẩm trong giỏ hàng
+                    if (num == -1 && (cart.getQuantityById(id) <= 1)) { // chi co 1 san pham trong gio hang
                         cart.removeItem(id);
                     } else {
                         if (num == 1 && cart.getQuantityById(id) >= numStore) {
-                            num = 0; // nếu số lượng trong kho lớn hơn số lượng cần mua không cho tăng nữa
+                            num = 0; // neu so luong trong kho lon hon so luong can mua khong cho tang nua
                         }
                         int price = p.getGiaKhuyenMai() * 2;
                         Item t = new Item(p, num, price);
                         cart.addItem(t);
+
                     }
                 } catch (NumberFormatException e) {
                     System.out.println(e.getMessage());
@@ -83,19 +82,18 @@ public class AddDelRomoveCartControl  extends HttpServlet {
                 }
                 Cookie c = new Cookie("cart", txt);
                 c.setMaxAge(2 * 24 * 60 * 60);
-                c.setHttpOnly(true); // Đặt thuộc tính "HttpOnly"
                 response.addCookie(c);
 
                 response.sendRedirect("CartControl");
             } else if (num == 0) {
-                // delete
+                //delete
                 String[] ids = txt.split("#");
                 String out = "";
                 for (int i = 0; i < ids.length; i++) {
                     String[] s = ids[i].split(":");
                     if (!s[0].equals(id_raw)) {
-                        if (out.isEmpty()) {
-                            out = ids[i];
+                        if (out.isEmpty()) { //
+                            out = ids[i]; //
                         } else {
                             out += "#" + ids[i];
                         }
@@ -104,7 +102,6 @@ public class AddDelRomoveCartControl  extends HttpServlet {
                 if (!out.isEmpty()) {
                     Cookie c = new Cookie("cart", out);
                     c.setMaxAge(2 * 24 * 60 * 60);
-                    c.setHttpOnly(true); // Đặt thuộc tính "HttpOnly"
                     response.addCookie(c);
                 }
                 cart = new Cart(out, list);
@@ -112,9 +109,10 @@ public class AddDelRomoveCartControl  extends HttpServlet {
                 List<LoaiSP> listlsp = loaispDAO.getAllloaisp();
                 response.sendRedirect("CartControl");
             }
-        } else {
+        } else
             response.sendRedirect("CartControl");
-        }
 
     }
+	
+
 }

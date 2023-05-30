@@ -28,11 +28,11 @@ public class DonHangDAO {
             ps.setInt(2, cart.getTotalMoney());
             ps.setString(3, date);
             ps.setInt(4, 1);
-            ps.setString(5, address);
+            ps.setString(5, address.substring(0, 50));
             ps.setString(6, "0");
-            ps.setString(7, name);
-            ps.setString(8, phone);
-            ps.setString(9, email);
+            ps.setString(7, name.substring(0, 50));
+            ps.setString(8, phone.substring(0, 50));
+            ps.setString(9, email.substring(0, 50));
             ps.executeUpdate();
             // lay id order vua tao ra
             String query1 = "Select top 1 MaDH from DonHang order by MaDH desc";
@@ -78,11 +78,11 @@ public class DonHangDAO {
             ps.setInt(2, cart.getTotalMoney());
             ps.setString(3, date);
             ps.setInt(4, 1);
-            ps.setString(5, address);
+            ps.setString(5, address.substring(0, 50));
             ps.setString(6, "1");
-            ps.setString(7, name);
-            ps.setString(8, phone);
-            ps.setString(9, email);
+            ps.setString(7, name.substring(0, 50));
+            ps.setString(8, phone.substring(0, 50));
+            ps.setString(9, email.substring(0, 50));
             ps.executeUpdate();
             // lay id order vua tao ra
             String query1 = "Select top 1 MaDH from DonHang order by MaDH desc";
@@ -173,7 +173,7 @@ public class DonHangDAO {
         try {
             conn = new ConnectJDBC().getConnection();
             ps = conn.prepareStatement(query);
-            ps.setString(1, id);
+            ps.setString(1, id.substring(0, 50));
             rs = ps.executeQuery();
             while (rs.next()) {
                 return new DonHang(rs.getInt(1), rs.getInt(2), rs.getInt(3), rs.getInt(4), rs.getDate(5), rs.getInt(6),
@@ -327,8 +327,8 @@ public class DonHangDAO {
         try {
             conn = new ConnectJDBC().getConnection();
             ps = conn.prepareStatement(querry);
-            ps.setString(1, maGH);
-            ps.setString(2, maTT);
+            ps.setString(1, maGH.substring(0, 50));
+            ps.setString(2, maTT.substring(0, 50));
             rs = ps.executeQuery();
             while (rs.next()) {
                 list.add(new DonHang(rs.getInt(1), rs.getInt(2), rs.getInt(3), rs.getInt(4), rs.getDate(5),
@@ -487,7 +487,7 @@ public class DonHangDAO {
 
             conn = new ConnectJDBC().getConnection();
             ps = conn.prepareStatement(querry);
-            ps.setString(1, email);
+            ps.setString(1, email.substring(0, 50));
             rs = ps.executeQuery();
             while (rs.next()) {
                 list.add(new DonHang(rs.getInt(1), rs.getInt(2), rs.getInt(3), rs.getInt(4), rs.getDate(5),
