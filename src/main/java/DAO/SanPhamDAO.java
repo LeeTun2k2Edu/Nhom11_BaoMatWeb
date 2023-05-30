@@ -22,7 +22,7 @@ public class SanPhamDAO
 		try {
 				conn =new ConnectJDBC().getConnection();
 				ps =conn.prepareStatement(query);
-				ps.setString(1,madm.substring(0, 50));
+				ps.setString(1,madm);
 				rs =ps.executeQuery();
 				while(rs.next())
 				{

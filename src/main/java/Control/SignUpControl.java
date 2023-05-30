@@ -59,15 +59,24 @@ public class SignUpControl extends HttpServlet {
 		response.setContentType("text/html; charset=UTF-8");
 		List<LoaiSP> listLSp = new LoaispDAO().getAllloaisp();
 		request.setAttribute("listlSp", listLSp);
-		String fullname = request.getParameter("fullname");
-		String username = request.getParameter("username");
-		String email = request.getParameter("email");
-		String phone = request.getParameter("phone");
-		String password = request.getParameter("password");
-		String repassword = request.getParameter("repassword");
+		
+//		String fullname = request.getParameter("fullname");
+//		String username = request.getParameter("username");
+//		String email = request.getParameter("email");
+//		String phone = request.getParameter("phone");
+//		String password = request.getParameter("password");
+//		String repassword = request.getParameter("repassword");
+		
+		StringBuffer fullname = new StringBuffer(request.getParameter("fullname"));
+		StringBuffer username = new StringBuffer(request.getParameter("username"));
+		StringBuffer email = new StringBuffer(request.getParameter("email"));
+		StringBuffer phone = new StringBuffer(request.getParameter("phone"));
+		StringBuffer password = new StringBuffer(request.getParameter("password"));
+		StringBuffer repassword = new StringBuffer(request.getParameter("repassword"));
 
+		
 		SignUpDAO dao = new SignUpDAO();
-		Users a = dao.CheckUserExist(username);
+		Users a = dao.CheckUserExist(username.toString());
 		if (a == null) {
 
 			int veri = dao.getRandom();
@@ -82,13 +91,16 @@ public class SignUpControl extends HttpServlet {
 			session.setAttribute("verify", veri);
 
 			SendMail sm = new SendMail();
-			Boolean test = sm.sendMail(email, veri, fullname);
+			Boolean test = sm.sendMail(email.toString(), veri, fullname.toString());
 			
-			if (Pattern.matches(invalidCharsRegex, username) || username.contains(" ")) {
+			
+			
+			
+			if (Pattern.matches(invalidCharsRegex, username) || username.toString().contains(" ")) {
 			    request.setAttribute("mess1", "Username chứa các kí tự không hợp lệ hoặc khoảng trắng .*[\\'\\\";%].*");
 			    request.getRequestDispatcher("/shop-cart/signUp.jsp").forward(request, response);
 			}
-			else if(!password.contentEquals(repassword)) {
+			else if(!password.toString().contentEquals(repassword.toString())) {
 				request.setAttribute("mess1", "Mật khẩu không trùng khớp");
 				request.getRequestDispatcher("/shop-cart/signUp.jsp").forward(request, response);
 			}

@@ -37,7 +37,7 @@ public class DanhMucDAO {
         try {
             conn = new ConnectJDBC().getConnection();
             ps = conn.prepareStatement(query);
-            ps.setString(1, maLoai.substring(0, 50));
+            ps.setString(1, maLoai);
             rs = ps.executeQuery();
             while (rs.next()) {
                 list.add(new DanhMuc(rs.getInt(1), rs.getInt(2), rs.getString(3), rs.getInt(4)));
@@ -53,7 +53,7 @@ public class DanhMucDAO {
         try {
             conn = new ConnectJDBC().getConnection();
             ps = conn.prepareStatement(query);
-            ps.setString(1, maDM.substring(0, 50));
+            ps.setString(1, maDM);
             rs = ps.executeQuery();
             while (rs.next()) {
                 return new DanhMuc(rs.getInt(1), rs.getInt(2), rs.getString(3), rs.getInt(4));
@@ -69,8 +69,8 @@ public class DanhMucDAO {
             conn = new ConnectJDBC().getConnection();
             ps = conn.prepareStatement(query);
 
-            ps.setString(1, MaLoai.substring(0, 50));
-            ps.setString(2, TenDM.substring(0, 50));
+            ps.setString(1, MaLoai);
+            ps.setString(2, TenDM);
             ps.setString(3, "0");
             ps.executeUpdate();
         } catch (Exception e) {
@@ -83,9 +83,9 @@ public class DanhMucDAO {
             conn = new ConnectJDBC().getConnection();
             ps = conn.prepareStatement(query);
 
-            ps.setString(1, MaLoai.substring(0, 50));
-            ps.setString(2, TenDM.substring(0, 50));
-            ps.setString(3, maDM.substring(0, 50));
+            ps.setString(1, MaLoai);
+            ps.setString(2, TenDM);
+            ps.setString(3, maDM);
             ps.executeUpdate();
         } catch (Exception e) {
         }
@@ -98,7 +98,7 @@ public class DanhMucDAO {
             ps = conn.prepareStatement(query);
 
             ps.setString(1, "1");
-            ps.setString(2, maDM.substring(0, 50));
+            ps.setString(2, maDM);
             ps.executeUpdate();
         } catch (Exception e) {
         }
