@@ -36,7 +36,7 @@ public class AnhSPDAO {
             conn = new ConnectJDBC().getConnection();
             ps = conn.prepareStatement(query);
             ps.setInt(1, id);
-            ps.setString(2, anh);
+            ps.setString(2, anh.substring(0, 1000));
             ps.executeUpdate();
         } catch (Exception e) {
         }

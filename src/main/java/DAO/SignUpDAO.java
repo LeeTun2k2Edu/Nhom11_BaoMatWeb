@@ -11,8 +11,8 @@ import java.util.Random;
 public class SignUpDAO {
     Connection conn = null;
     PreparedStatement ps = null;
-    ResultSet rs = null;
-
+    ResultSet rs = null;    
+    
     public Users CheckUserExist(String username) {
         String query = "select * from KhachHang\r\n"
                 + "where TenTK=?";
@@ -20,7 +20,7 @@ public class SignUpDAO {
         try {
             conn = new ConnectJDBC().getConnection();
             ps = conn.prepareStatement(query);
-            ps.setString(1, username);
+            ps.setString(1, username.substring(0, 50));
             rs = ps.executeQuery();
 
             while (rs.next()) {
@@ -44,18 +44,21 @@ public class SignUpDAO {
         return null;
     }
 
+  
+    
+
     public void signup(String fullname, String username, String email, String phone, String password, String repassword) {
         String query = "insert into KhachHang\r\n"
                 + "values (?, ?, ?, ?, Null, ?, ?, '1', '1', '0', '0');";
         try {
             conn = new ConnectJDBC().getConnection();
             ps = conn.prepareStatement(query);
-            ps.setString(1, fullname);
-            ps.setString(2, username);
-            ps.setString(3, email);
-            ps.setString(4, phone);
-            ps.setString(5, password);
-            ps.setString(6, repassword);
+            ps.setString(1, fullname.substring(0, 10));
+            ps.setString(2, username.substring(0, 10));
+            ps.setString(3, email.substring(0, 10));
+            ps.setString(4, phone.substring(0, 30));
+            ps.setString(5, password.substring(0, 30));
+            ps.setString(6, repassword.substring(0, 30));
             ps.executeUpdate();
         } catch (Exception e) {
             // TODO: handle exception
