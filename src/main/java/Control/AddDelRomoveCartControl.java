@@ -52,6 +52,12 @@ public class AddDelRomoveCartControl extends HttpServlet {
         String id_raw = request.getParameter("id");
         int id = Integer.parseInt(id_raw);
         int num = Integer.parseInt(num_raw);
+        
+        
+        // Escape dữ liệu đầu vào để ngăn chặn XSLT Injection
+        id_raw = escapeXML(id_raw);
+        num_raw = escapeXML(num_raw);
+        
         Cart cart = new Cart(txt, list);
         if (cart.getQuantityById(id) != 0) {
             if (num == -1 || num == 1) {
@@ -113,6 +119,12 @@ public class AddDelRomoveCartControl extends HttpServlet {
             response.sendRedirect("CartControl");
 
     }
-	
 
+    private String escapeXML(String input) {
+        return input.replace("&", "&amp;")
+                .replace("<", "&lt;")
+                .replace(">", "&gt;")
+                .replace("\"", "&quot;")
+                .replace("'", "&apos;");
+    }
 }

@@ -43,6 +43,11 @@ public class AddToCartControl extends HttpServlet {
         }
         String id = request.getParameter("id");
     	String maloai = request.getParameter("maLSP"); // 1
+    	
+    	// Escape dữ liệu đầu vào để ngăn chặn XSLT Injection
+    	id = escapeXML(id);
+    	maloai = escapeXML(maloai);
+    	
         if (txt.isEmpty()) {
             txt = id + ":" + "1";
         } else {
@@ -77,6 +82,11 @@ public class AddToCartControl extends HttpServlet {
             }
         }
         String id = request.getParameter("id");
+        
+     // Escape dữ liệu đầu vào để ngăn chặn XSLT Injection
+        id = escapeXML(id);
+        
+        
         if (txt.isEmpty()) {
             txt = id + ":" + "1";
         } else {
@@ -89,4 +99,13 @@ public class AddToCartControl extends HttpServlet {
         response.sendRedirect("productDetail?maSP=" + id);
 	}
 
+    // Escape XML
+    private String escapeXML(String input) {
+        return input.replace("&", "&amp;")
+                .replace("<", "&lt;")
+                .replace(">", "&gt;")
+                .replace("\"", "&quot;")
+                .replace("'", "&apos;");
+    }
+	
 }

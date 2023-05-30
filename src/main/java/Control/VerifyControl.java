@@ -32,42 +32,49 @@ public class VerifyControl extends HttpServlet {
      * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
      */
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-    	List<LoaiSP>listLSp=new LoaispDAO().getAllloaisp();
-		request.setAttribute("listlSp", listLSp);
-    	request.getRequestDispatcher("/shop-cart/verify.jsp").forward(request, response);
+    	try {
+    		List<LoaiSP>listLSp=new LoaispDAO().getAllloaisp();
+    		request.setAttribute("listlSp", listLSp);
+    		request.getRequestDispatcher("/shop-cart/verify.jsp").forward(request, response);    		
+    	} catch (Exception e) {
+			e.printStackTrace();
+		}
     }
 
     /**
      * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
      */
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    	try {
+    		request.setCharacterEncoding("UTF-8");
+            response.setCharacterEncoding("UTF-8");
+            response.setContentType("text/html; charset=UTF-8");
 
-        request.setCharacterEncoding("UTF-8");
-        response.setCharacterEncoding("UTF-8");
-        response.setContentType("text/html; charset=UTF-8");
+            
+            String veri = request.getParameter("verify");
+            int verify = Integer.parseInt(veri);
 
-        
-        String veri = request.getParameter("verify");
-        int verify = Integer.parseInt(veri);
+            HttpSession session = request.getSession();
+            int i = Integer.parseInt(session.getAttribute("verify").toString());
 
-        HttpSession session = request.getSession();
-        int i = Integer.parseInt(session.getAttribute("verify").toString());
+            if (verify == i) {
+                SignUpDAO dao = new SignUpDAO();
+                String fullname = session.getAttribute("fullname").toString();
+                String username = session.getAttribute("username").toString();
+                String email = session.getAttribute("email").toString();
+                String phone = session.getAttribute("phone").toString();
+                String pass = session.getAttribute("password").toString();
+                String repass = session.getAttribute("repassword").toString();
 
-        if (verify == i) {
-            SignUpDAO dao = new SignUpDAO();
-            String fullname = session.getAttribute("fullname").toString();
-            String username = session.getAttribute("username").toString();
-            String email = session.getAttribute("email").toString();
-            String phone = session.getAttribute("phone").toString();
-            String pass = session.getAttribute("password").toString();
-            String repass = session.getAttribute("repassword").toString();
-
-            dao.signup(fullname, username, email, phone, pass, repass);
-            response.sendRedirect("http://localhost:8080/BookStore");
-        } else {
-            request.setAttribute("mess2", "Sai mã xác nhận");
-            request.getRequestDispatcher("/shop-cart/verify.jsp").forward(request, response);
-        }
+                dao.signup(fullname, username, email, phone, pass, repass);
+                response.sendRedirect("http://localhost:8080/BookStore");
+            } else {
+                request.setAttribute("mess2", "Sai mã xác nhận");
+                request.getRequestDispatcher("/shop-cart/verify.jsp").forward(request, response);
+            }
+    	} catch (Exception e) {
+			e.printStackTrace();
+		}
     }
 
 }
