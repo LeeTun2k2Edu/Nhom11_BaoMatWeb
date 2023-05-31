@@ -20,7 +20,7 @@ public class SignUpDAO {
         try {
             conn = new ConnectJDBC().getConnection();
             ps = conn.prepareStatement(query);
-            ps.setString(1, username.substring(0, 50));
+            ps.setString(1, username);
             rs = ps.executeQuery();
 
             while (rs.next()) {
@@ -53,12 +53,12 @@ public class SignUpDAO {
         try {
             conn = new ConnectJDBC().getConnection();
             ps = conn.prepareStatement(query);
-            ps.setString(1, fullname.substring(0, 10));
-            ps.setString(2, username.substring(0, 10));
-            ps.setString(3, email.substring(0, 10));
-            ps.setString(4, phone.substring(0, 30));
-            ps.setString(5, password.substring(0, 30));
-            ps.setString(6, repassword.substring(0, 30));
+            ps.setString(1, fullname);
+            ps.setString(2, username);
+            ps.setString(3, email);
+            ps.setString(4, phone);
+            ps.setString(5, password);
+            ps.setString(6, repassword);
             ps.executeUpdate();
         } catch (Exception e) {
             // TODO: handle exception
