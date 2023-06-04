@@ -1,111 +1,101 @@
-package Control;
+package DAO;
 
-import DAO.LoaispDAO;
-import DAO.SanPhamDAO;
-import DAO.SignUpDAO;
-import Model.Argon2;
-import Model.LoaiSP;
-import Model.MD5;
-import Model.SanPham;
-import Model.SendMail;
+import Connection.ConnectJDBC;
 import Model.Users;
 
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import java.io.IOException;
-import java.util.List;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
-/**
- * Servlet implementation class SignUpControl
- */
-@WebServlet("/signup")
-public class SignUpControl extends HttpServlet {
-	private static final long serialVersionUID = 1L;
+import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 
-	/**
-	 * @see HttpServlet#HttpServlet()
-	 */
-	public SignUpControl() {
-		super();
-		// TODO Auto-generated constructor stub
-	}
+public class LoginDAO {
+    Connection conn = null;
+    PreparedStatement ps = null;
+    ResultSet rs = null;
 
-	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
-	 *      response)
-	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-		List<LoaiSP> listLSp = new LoaispDAO().getAllloaisp();
-		request.setAttribute("listlSp", listLSp);
-		List<SanPham> listChuaRaMat = new SanPhamDAO().chuaRaMat();
-		request.setAttribute("chuaramat", listChuaRaMat);
-		request.getRequestDispatcher("/shop-cart/signUp.jsp").forward(request, response);
-	}
+    public Users login(String username, String password) {
+        String query = "select * from KhachHang where TenTK='"+username+"'";
 
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
-	 *      response)
-	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-		request.setCharacterEncoding("UTF-8");
-		response.setCharacterEncoding("UTF-8");
-		response.setContentType("text/html; charset=UTF-8");
-		List<LoaiSP> listLSp = new LoaispDAO().getAllloaisp();
-		request.setAttribute("listlSp", listLSp);
-		String fullname = request.getParameter("fullname");
-		String username = request.getParameter("username");
-		String email = request.getParameter("email");
-		String phone = request.getParameter("phone");
-		String password = request.getParameter("password");
-		String repassword = request.getParameter("repassword");
+        try {
+            conn = new ConnectJDBC().getConnection();
+            ps = conn.prepareStatement(query);
+            rs = ps.executeQuery();
 
-		Argon2 argon2 = new Argon2();
-		String passArgon2 = argon2.argon2(password);
-		String repasssArgon2 = argon2.argon2(repassword);
+        
+        	
+        	while(rs.next())
+    		{
+        		Argon2PasswordEncoder encoder = new Argon2PasswordEncoder(32,64,1,5*1024,2);
+        		System.out.println("gia tri cl : "+  rs.getString(7));
+    			if(encoder.matches(password, rs.getString(7)))
+    				return new Users(rs.getInt(1),
+    					rs.getString(2),
+    					rs.getString(3),
+                    	rs.getString(4),
+                    	rs.getString(5),
+                    	rs.getString(6),
+                    	rs.getString(7),
+                    	rs.getString(8),
+                    	rs.getInt(9),
+                    	rs.getInt(10),
+                    	rs.getInt(11),
+                    	rs.getInt(12));
+    		}
+        
+        } catch (Exception e) {
+            // TODO: handle exception
+        }
 
-		System.out.println(passArgon2);
-		System.out.println(repasssArgon2);
-		
-		MD5 lib = new MD5(); 
-		String passMD5 = lib.md5(password); 
-		String repassMD5 =  lib.md5(repassword);
-		System.out.println(passMD5);
-		System.out.println(repassMD5);
+        return null;
+    }
 
-		SignUpDAO dao = new SignUpDAO();
-		Users a = dao.CheckUserExist(username);
-		if (a == null) {
+    public Users CheckUsers(String email) {
+        String query = "select * from KhachHang\r\n"
+                + "where Email = ?";
 
-			int veri = dao.getRandom();
+        try {
+            conn = new ConnectJDBC().getConnection();
+            ps = conn.prepareStatement(query);
+            ps.setString(1, email);
+            rs = ps.executeQuery();
 
-			HttpSession session = request.getSession();
-			session.setAttribute("fullname", fullname);
-			session.setAttribute("username", username);
-			session.setAttribute("email", email);
-			session.setAttribute("phone", phone);
-			session.setAttribute("password", passArgon2);
-			session.setAttribute("repassword", passArgon2);
-			session.setAttribute("verify", veri);
+            while (rs.next()) {
+                return new Users(rs.getInt(1),
+                        rs.getString(2),
+                        rs.getString(3),
+                        rs.getString(4),
+                        rs.getString(5),
+                        rs.getString(6),
+                        rs.getString(7),
+                        rs.getString(8),
+                        rs.getInt(9),
+                        rs.getInt(10),
+                        rs.getInt(11),
+                        rs.getInt(12));
+            }
+        } catch (Exception e) {
+            // TODO: handle exception
+        }
 
-			SendMail sm = new SendMail();
-			Boolean test = sm.sendMail(email, veri, fullname);
+        return null;
+    }
 
-			if (test == false) {
-				request.setAttribute("mess1", "Email không chính xác");
-				request.getRequestDispatcher("/shop-cart/signUp.jsp").forward(request, response);
-			} else {
-				response.sendRedirect("verify");
-			}
-		} else {
-			request.setAttribute("mess1", "Tài khoản đã tồn tại");
-			request.getRequestDispatcher("/shop-cart/signUp.jsp").forward(request, response);
-		}
-	}
+    public void ChangePass(int id, String pass) {
+        String querry = "update KhachHang set MK=?, NNMK = ? where MaKH=?";
+        try {
+
+            conn = new ConnectJDBC().getConnection();
+
+            ps = conn.prepareStatement(querry);
+            ps.setString(1, pass);
+            ps.setString(2, pass);
+            ps.setInt(3, id);
+            ps.executeUpdate();
+
+        } catch (Exception e) {
+        }
+    }
+
 
 }
