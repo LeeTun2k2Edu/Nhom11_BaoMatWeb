@@ -1,93 +1,111 @@
-package DAO;
+package Control;
 
-import Connection.ConnectJDBC;
+import DAO.LoaispDAO;
+import DAO.SanPhamDAO;
+import DAO.SignUpDAO;
+import Model.Argon2;
+import Model.LoaiSP;
+import Model.MD5;
+import Model.SanPham;
+import Model.SendMail;
 import Model.Users;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.io.IOException;
+import java.util.List;
 
-public class LoginDAO {
-    Connection conn = null;
-    PreparedStatement ps = null;
-    ResultSet rs = null;
+/**
+ * Servlet implementation class SignUpControl
+ */
+@WebServlet("/signup")
+public class SignUpControl extends HttpServlet {
+	private static final long serialVersionUID = 1L;
 
-    public Users login(String username, String password) {
-        String query = "select * from KhachHang where TenTK='"+username+ "' and MK = '"+password+"'";
+	/**
+	 * @see HttpServlet#HttpServlet()
+	 */
+	public SignUpControl() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
 
-        try {
-            conn = new ConnectJDBC().getConnection();
-            ps = conn.prepareStatement(query);
-          
-            rs = ps.executeQuery();
+	/**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
+	 *      response)
+	 */
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		List<LoaiSP> listLSp = new LoaispDAO().getAllloaisp();
+		request.setAttribute("listlSp", listLSp);
+		List<SanPham> listChuaRaMat = new SanPhamDAO().chuaRaMat();
+		request.setAttribute("chuaramat", listChuaRaMat);
+		request.getRequestDispatcher("/shop-cart/signUp.jsp").forward(request, response);
+	}
 
-            while (rs.next()) {
-                return new Users(rs.getInt(1),
-                        rs.getString(2),
-                        rs.getString(3),
-                        rs.getString(4),
-                        rs.getString(5),
-                        rs.getString(6),
-                        rs.getString(7),
-                        rs.getString(8),
-                        rs.getInt(9),
-                        rs.getInt(10),
-                        rs.getInt(11),
-                        rs.getInt(12));
-            }
-        } catch (Exception e) {
-            // TODO: handle exception
-        }
+	/**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
+	 *      response)
+	 */
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		request.setCharacterEncoding("UTF-8");
+		response.setCharacterEncoding("UTF-8");
+		response.setContentType("text/html; charset=UTF-8");
+		List<LoaiSP> listLSp = new LoaispDAO().getAllloaisp();
+		request.setAttribute("listlSp", listLSp);
+		String fullname = request.getParameter("fullname");
+		String username = request.getParameter("username");
+		String email = request.getParameter("email");
+		String phone = request.getParameter("phone");
+		String password = request.getParameter("password");
+		String repassword = request.getParameter("repassword");
 
-        return null;
-    }
+		Argon2 argon2 = new Argon2();
+		String passArgon2 = argon2.argon2(password);
+		String repasssArgon2 = argon2.argon2(repassword);
 
-    public Users CheckUsers(String email) {
-        String query = "select * from KhachHang\r\n"
-                + "where Email = ?";
+		System.out.println(passArgon2);
+		System.out.println(repasssArgon2);
+		
+		MD5 lib = new MD5(); 
+		String passMD5 = lib.md5(password); 
+		String repassMD5 =  lib.md5(repassword);
+		System.out.println(passMD5);
+		System.out.println(repassMD5);
 
-        try {
-            conn = new ConnectJDBC().getConnection();
-            ps = conn.prepareStatement(query);
-            ps.setString(1, email);
-            rs = ps.executeQuery();
+		SignUpDAO dao = new SignUpDAO();
+		Users a = dao.CheckUserExist(username);
+		if (a == null) {
 
-            while (rs.next()) {
-                return new Users(rs.getInt(1),
-                        rs.getString(2),
-                        rs.getString(3),
-                        rs.getString(4),
-                        rs.getString(5),
-                        rs.getString(6),
-                        rs.getString(7),
-                        rs.getString(8),
-                        rs.getInt(9),
-                        rs.getInt(10),
-                        rs.getInt(11),
-                        rs.getInt(12));
-            }
-        } catch (Exception e) {
-            // TODO: handle exception
-        }
+			int veri = dao.getRandom();
 
-        return null;
-    }
+			HttpSession session = request.getSession();
+			session.setAttribute("fullname", fullname);
+			session.setAttribute("username", username);
+			session.setAttribute("email", email);
+			session.setAttribute("phone", phone);
+			session.setAttribute("password", passArgon2);
+			session.setAttribute("repassword", passArgon2);
+			session.setAttribute("verify", veri);
 
-    public void ChangePass(int id, String pass) {
-        String querry = "update KhachHang set MK=?, NNMK = ? where MaKH=?";
-        try {
+			SendMail sm = new SendMail();
+			Boolean test = sm.sendMail(email, veri, fullname);
 
-            conn = new ConnectJDBC().getConnection();
-
-            ps = conn.prepareStatement(querry);
-            ps.setString(1, pass);
-            ps.setString(2, pass);
-            ps.setInt(3, id);
-            ps.executeUpdate();
-
-        } catch (Exception e) {
-        }
-    }
-
+			if (test == false) {
+				request.setAttribute("mess1", "Email không chính xác");
+				request.getRequestDispatcher("/shop-cart/signUp.jsp").forward(request, response);
+			} else {
+				response.sendRedirect("verify");
+			}
+		} else {
+			request.setAttribute("mess1", "Tài khoản đã tồn tại");
+			request.getRequestDispatcher("/shop-cart/signUp.jsp").forward(request, response);
+		}
+	}
 
 }
