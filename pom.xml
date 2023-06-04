@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+ <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -16,6 +16,31 @@
     </properties>
 
     <dependencies>
+    <dependency>
+   <groupId>org.springframework.security</groupId>
+   <artifactId>spring-security-crypto</artifactId>
+   <version>5.6.2</version>
+</dependency>
+<dependency>
+   <groupId>commons-logging</groupId>
+   <artifactId>commons-logging</artifactId>
+   <version>1.2</version>
+</dependency>
+<dependency>
+   <groupId>org.bouncycastle</groupId>
+   <artifactId>bcpkix-jdk15on</artifactId>
+   <version>1.70</version>
+</dependency>
+     	<dependency>
+      		<groupId>de.mkammerer</groupId>
+      		<artifactId>argon2-jvm</artifactId>
+     		<version>2.11</version>
+  		</dependency>
+  		<dependency>
+    		<groupId>de.mkammerer</groupId>
+    		<artifactId>argon2-jvm-nolibs</artifactId>
+    		<version>2.11</version>
+		</dependency>
         <dependency>
             <groupId>com.paypal.sdk</groupId>
             <artifactId>rest-api-sdk</artifactId>
@@ -45,13 +70,11 @@
             <version>1.2</version>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/com.microsoft.sqlserver/mssql-jdbc -->
-		<dependency>
-    		<groupId>com.microsoft.sqlserver</groupId>
-    		<artifactId>mssql-jdbc</artifactId>
-    		<version>12.2.0.jre8</version>
-		</dependency>
-
+        <dependency>
+            <groupId>com.microsoft.sqlserver</groupId>
+            <artifactId>mssql-jdbc</artifactId>
+            <version>9.2.1.jre8</version>
+        </dependency>
 
         <dependency>
             <groupId>com.cloudinary</groupId>
