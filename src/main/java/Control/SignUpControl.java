@@ -66,6 +66,12 @@ public class SignUpControl extends HttpServlet {
         String password = request.getParameter("password");
         String repassword = request.getParameter("repassword");
 
+        
+        // escape XSS 
+        fullname = escapeXML(fullname);
+        
+        
+        
         MD5 lib = new MD5();
         String passMD5 = lib.md5(password);
         String repassMD5 = lib.md5(repassword);
@@ -105,5 +111,14 @@ public class SignUpControl extends HttpServlet {
             request.setAttribute("mess1", "Tài khoản đã tồn tại");
             request.getRequestDispatcher("/shop-cart/signUp.jsp").forward(request, response);
         }
+    }
+    
+    // Escape XML
+    private String escapeXML(String input) {
+        return input.replace("&", "&amp;")
+                .replace("<", "&lt;")
+                .replace(">", "&gt;")
+                .replace("\"", "&quot;")
+                .replace("'", "&apos;");
     }
 }

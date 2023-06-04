@@ -47,15 +47,12 @@ public class User_PasswordControl extends HttpServlet {
             if (newPass1.equals(newPass2)) {
                 KhachHangDAO dao2 = new KhachHangDAO();
                 dao2.ChangePassWord(users.getMaKH(), newPass1);
-                System.out.println("hello 2");
                 session.removeAttribute("acc");
                 response.sendRedirect("http://localhost:8080/BookStore");
             } else {
-                System.out.println("hello 3");
                 response.sendRedirect("User");
             }
         } else {
-            System.out.println("hello 1");
             response.sendRedirect("User");
 
         }

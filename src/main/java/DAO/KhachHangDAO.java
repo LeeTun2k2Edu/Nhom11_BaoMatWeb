@@ -114,6 +114,9 @@ public class KhachHangDAO {
     public void addKhachHang(String tenKH, String DiaChi, String SoDT, String Email) {
         String query = "INSERT INTO KhachHang (TenKH, DiaChi,Phone,Email,isUser,IsAdmin,IsShiper)\n" +
                 "VALUES (?,?,?,?,?,?,?);";
+        tenKH = escapeXML(tenKH);
+        System.out.print(tenKH);
+        
         try {
             conn = new ConnectJDBC().getConnection();
             ps = conn.prepareStatement(query);
@@ -127,6 +130,15 @@ public class KhachHangDAO {
             ps.executeUpdate();
         } catch (Exception e) {
         }
+    }
+    
+    // Escape XML
+    private String escapeXML(String input) {
+        return input.replace("&", "&amp;")
+                .replace("<", "&lt;")
+                .replace(">", "&gt;")
+                .replace("\"", "&quot;")
+                .replace("'", "&apos;");
     }
 
 

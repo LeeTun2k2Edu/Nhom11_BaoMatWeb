@@ -29,7 +29,6 @@ public class Ad_invoice extends HttpServlet {
 
         String maDH = request.getParameter("maDH");
         int maTT = Integer.parseInt(request.getParameter("maTT"));
-        System.out.println(maTT);
         if(maTT==1)
         	donhangDAO.trangthai(maDH);
         if (maTT==2) {

@@ -37,9 +37,6 @@ public class MainControl extends HttpServlet {
 		List<SanPham> listNoiBat = new SanPhamDAO().featuredProduct();
 		List<SanPham> listChuaRaMat = new SanPhamDAO().chuaRaMat();
 		List<LoaiSP> listLSp = new LoaispDAO().getAllloaisp();
-		for (SanPham a : list) {
-			System.out.println(a.getTenSP());
-		}
 		request.setAttribute("listNew", list);
 		request.setAttribute("size", list.size());
 		request.setAttribute("listlSp", listLSp);

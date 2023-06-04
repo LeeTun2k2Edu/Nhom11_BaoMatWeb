@@ -102,7 +102,6 @@ public class Ad_AddProductControl extends HttpServlet {
         for (int i = index; i < fileParts.size(); i++) {
             Part part = (Part) fileParts.toArray()[i];
             if (!part.getName().equals("multiPartServlet") || part.getSubmittedFileName() == null || part.getSubmittedFileName().equals("")) {
-                System.out.println(part.getName());
                 fileParts.remove(part);
                 i = index - 1;
             }
@@ -162,8 +161,6 @@ public class Ad_AddProductControl extends HttpServlet {
             }
 
 
-            System.out.println(sanPham.getAnh());
-
             mess ="Tạo thành công";
 
         } else {
@@ -185,7 +182,6 @@ public class Ad_AddProductControl extends HttpServlet {
                 anhSPDAO.deleteAnhSP(sanPham.getMaSP());
                 for (String image : images) {
                     anhSPDAO.addAnhSP(sanPham.getMaSP(), image);
-                    System.out.println("zo");
                 }
 
             }

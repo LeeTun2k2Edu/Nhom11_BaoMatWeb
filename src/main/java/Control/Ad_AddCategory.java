@@ -73,7 +73,6 @@ public class Ad_AddCategory extends HttpServlet {
         response.setContentType("text/html; charset=UTF-8");
 
         DanhMucDAO danhMucDAO = new DanhMucDAO();
-        System.out.println("Da goi duoc");
 
         String maDM = request.getParameter("maDM");
         String maLoai = request.getParameter("maLoai");
