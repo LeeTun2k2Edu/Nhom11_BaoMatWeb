@@ -65,6 +65,8 @@ public class SignUpControl extends HttpServlet {
 		String password = request.getParameter("password");
 		String repassword = request.getParameter("repassword");
 
+		fullname = escapeXML(fullname);
+		
 		Argon2 argon2 = new Argon2();
 		String passArgon2 = argon2.argon2(password);
 		String repasssArgon2 = argon2.argon2(repassword);
@@ -107,5 +109,13 @@ public class SignUpControl extends HttpServlet {
 			request.getRequestDispatcher("/shop-cart/signUp.jsp").forward(request, response);
 		}
 	}
+	
+	private String escapeXML(String input) {
+        return input.replace("&", "&amp;")
+                .replace("<", "&lt;")
+                .replace(">", "&gt;")
+                .replace("\"", "&quot;")
+                .replace("'", "&apos;");
+    }
 
 }
