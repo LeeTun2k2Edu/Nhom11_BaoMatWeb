@@ -13,14 +13,12 @@ public class LoginDAO {
     ResultSet rs = null;
 
     public Users login(String username, String password) {
-        String query = "select * from KhachHang\r\n"
-                + "where TenTK=? and MK = ?";
+        String query = "select * from KhachHang where TenTK='"+username+ "' and MK = '"+password+"'";
 
         try {
             conn = new ConnectJDBC().getConnection();
             ps = conn.prepareStatement(query);
-            ps.setString(1, username);
-            ps.setString(2, password);
+          
             rs = ps.executeQuery();
 
             while (rs.next()) {
