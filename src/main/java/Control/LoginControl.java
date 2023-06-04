@@ -28,7 +28,6 @@ public class LoginControl extends HttpServlet {
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		response.setHeader("Access-Control-Allow-Origin", "*");
 		request.setCharacterEncoding("UTF-8");
 		response.setCharacterEncoding("UTF-8");
 		response.setContentType("text/html; charset=UTF-8");
@@ -40,7 +39,7 @@ public class LoginControl extends HttpServlet {
 	     String passMD5 = lib.md5(password);
 	        
 		LoginDAO dao = new LoginDAO();
-		Users a = dao.login(username, passMD5);
+		Users a = dao.login(username, password);
 		if (a == null) {
 			response.sendRedirect("http://localhost:8080/BookStore?var=1");
 		} else {
